@@ -1,0 +1,35 @@
+name: Daily CF + DDIA email
+
+on:
+  schedule:
+    # 01:30 UTC = 06:30 AM PKT. Change the "30 1" if you want a different time.
+    - cron: "30 1 * * *"
+  workflow_dispatch: {}   # lets you trigger it manually from the Actions tab to test
+
+permissions:
+  contents: write
+
+jobs:
+  send:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Run daily script
+        env:
+          SMTP_USER: ${{ secrets.SMTP_USER }}
+          SMTP_PASS: ${{ secrets.SMTP_PASS }}
+          TO_EMAIL: ${{ secrets.TO_EMAIL }}
+        run: python daily_send.py
+
+      - name: Save progress
+        run: |
+          git config user.name "daily-bot"
+          git config user.email "bot@users.noreply.github.com"
+          git add data/
+          git diff --quiet --cached || git commit -m "update progress"
+          git push
