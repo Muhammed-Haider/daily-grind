@@ -1,9 +1,9 @@
 name: Daily CF + DDIA email
 
 on:
-  schedule:
-    # 01:30 UTC = 06:30 AM PKT. Change the "30 1" if you want a different time.
-    - cron: "30 1 * * *"
+  # schedule:
+  #   # 01:30 UTC = 06:30 AM PKT. Change the "30 1" if you want a different time.
+  #   - cron: "30 1 * * *"
   workflow_dispatch: {}   # lets you trigger it manually from the Actions tab to test
 
 permissions:
