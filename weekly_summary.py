@@ -6,6 +6,7 @@ from email.mime.text import MIMEText
 
 DATA_DIR = os.path.join(os.path.dirname(__file__), "data")
 HISTORY_FILE = os.path.join(DATA_DIR, "history.json")
+REPLIES_FILE = os.path.join(DATA_DIR, "replies.json")
 
 
 def load_json(path, default):
@@ -51,6 +52,16 @@ def main():
             lines.append(f"  - {h['problem_name']} (rating {h['problem_rating']}) - {h['problem_link']}")
 
         body = "\n".join(lines)
+
+    replies = load_json(REPLIES_FILE, [])
+    week_replies = [r for r in replies if date.fromisoformat(r["date"]) > cutoff]
+
+    if week_replies:
+        body += "\n\nYour replies this week:\n"
+        for r in week_replies:
+            body += f"  [{r['date']}] {r['text'][:200]}\n"
+    else:
+        body += "\n\nNo replies logged this week."
 
     send_email("Weekly recap: CF + DDIA", body)
     print("Weekly summary sent")
